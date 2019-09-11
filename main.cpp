@@ -1,6 +1,8 @@
 #include <string>
 #include <sstream>
 
+#include <Urho3D/ThirdParty/SDL/SDL_joystick.h>
+
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Application.h>
 #include <Urho3D/Engine/Engine.h>

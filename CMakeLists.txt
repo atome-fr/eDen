@@ -32,3 +32,5 @@ include (UrhoCommon)
 define_source_files ()
 # Setup target with resource copying
 setup_main_executable ()
+
+set (CMAKE_EXE_LINKER_FLAGS "-L/usr/local/lib -lusbhid")
