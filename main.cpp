@@ -30,6 +30,10 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Skybox.h>
 
+#include <mruby.h>
+#include <mruby/array.h>
+#include <mruby/irep.h>
+
 using namespace Urho3D;
 /**
 * Using the convenient Application API we don't have
@@ -46,6 +50,8 @@ public:
     SharedPtr<Scene> scene_;
     SharedPtr<Node> boxNode_;
     SharedPtr<Node> cameraNode_;
+
+    mrb_state *mrb_;
 
     /**
     * This happens before the engine has been initialized
@@ -72,6 +78,11 @@ public:
         engineParameters_["WindowWidth"]=1280;
         engineParameters_["WindowHeight"]=720;
         engineParameters_["WindowResizable"]=true;
+
+        mrb_ = mrb_open();
+        if (!mrb_) {
+            exit(EXIT_FAILURE);
+        }
     }
 
     /**
@@ -137,6 +148,7 @@ public:
         boxObject->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
         boxObject->SetCastShadows(true);
 
+#if 0
         // Create 400 boxes in a grid.
         for(int x=-30;x<30;x+=3)
             for(int z=0;z<60;z+=3)
@@ -149,6 +161,41 @@ public:
                 boxObject->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
                 boxObject->SetCastShadows(true);
             }
+#endif
+
+        {
+            FILE *fp = fopen("scene.rb", "r");
+            mrb_value obj = mrb_load_file(mrb_, fp);
+            fclose(fp);
+
+            struct RClass *RbScene = mrb_class_get(mrb_, "Scene");
+            mrb_value scene = mrb_obj_new(mrb_, RbScene, 0, NULL);
+            mrb_value boxes = mrb_funcall(mrb_, scene, "boxes", 0);
+
+            int n = mrb_fixnum(mrb_funcall(mrb_, boxes, "size", 0));
+            if (mrb_->exc) {
+                mrb_print_error(mrb_);
+            }
+            for (int i = 0; i < 3; i++) {
+                mrb_value rb_box = mrb_ary_entry(boxes, i);
+
+                int scale = mrb_fixnum(mrb_funcall(mrb_, rb_box, "scale", 0));
+
+                mrb_value position = mrb_funcall(mrb_, rb_box, "position", 0);
+                int x = mrb_fixnum(mrb_ary_entry(position, 0));
+                int y = mrb_fixnum(mrb_ary_entry(position, 1));
+                int z = mrb_fixnum(mrb_ary_entry(position, 2));
+
+                Node *box = scene_->CreateChild("Box");
+                box->SetPosition(Vector3(x, y, z));
+                box->SetScale(Vector3(scale, scale, scale));
+
+                StaticModel* boxObject = box->CreateComponent<StaticModel>();
+                boxObject->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
+                boxObject->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
+                boxObject->SetCastShadows(true);
+            }
+        }
 
         // We need a camera from which the viewport can render.
         cameraNode_=scene_->CreateChild("Camera");

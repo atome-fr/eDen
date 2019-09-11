@@ -34,3 +34,8 @@ define_source_files ()
 setup_main_executable ()
 
 set (CMAKE_EXE_LINKER_FLAGS "-L/usr/local/lib -lusbhid")
+
+find_library(MRUBY_LIBS mruby ext/mruby/build/host/lib)
+find_path (MRUBY_INCLUDES mruby.h ext/mruby/include)
+include_directories(${MRUBY_INCLUDES})
+target_link_libraries(${TARGET_NAME} ${MRUBY_LIBS})
