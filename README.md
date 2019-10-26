@@ -1,4 +1,4 @@
-# urho3d-mruby-example
+# eDen-mruby-example
 
 ## Building
 
