@@ -1,4 +1,15 @@
-# eDen-mruby-example
+# eDen
+eDen is a free, cross-platform framework.<br><br>
+eDen is suitable for both applications and games developement.<br>
+it can produce 2D and 3D games, mobile and desktop applications, but also audiounit and VST audio plugins.<br>
+it is entirely scriptable in Ruby.<br><br>
+The following operating systems are supported : Android, Freebsd, HTML5, iOS, Linux, Macos, Windows, .<br>
+The following platforms are supported : Beaglebone and Raspberry PI .<br>
+
+## License
+
+Licensed under the MIT license, see LICENSE for details.
+# mruby-example
 
 ## Building
 
