@@ -4,6 +4,7 @@
 
 ```
 git clone https://github.com/atome-fr/eDen.git
+cd eDen
 git submodule init
 git submodule update
 cd ext/mruby
