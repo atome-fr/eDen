@@ -3,6 +3,7 @@
 ## Building
 
 ```
+git clone https://github.com/atome-fr/eDen.git
 git submodule init
 git submodule update
 cd ext/mruby
